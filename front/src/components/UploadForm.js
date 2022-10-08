@@ -4,10 +4,11 @@ import { uploadFiles } from "../API";
 const UploadForm = () => {
   const [firstSelectedFile, setFirstSelectedFile] = useState(null);
   const [secondSelectedFile, setSecondSelectedFile] = useState(null);
-  const [filesContent, setFilesContent] = useState(null);
+  const [load, setLoad] = useState(false);
+  const [filesContent, setFilesContent] = useState({});
+  const [comparsionFiles, setComparsionFiles] = useState([]);
 
   const onFileUpload = async () => {
-    setFilesContent(null);
     const files = {};
     const reader = new FileReader();
 
@@ -22,8 +23,33 @@ const UploadForm = () => {
 
     setTimeout(async () => {
       const data = await uploadFiles(files);
-      setFilesContent(data);
+
+      setComparsionFiles(data);
+      setFilesContent(files);
+
+      displayComparsion();
+      setLoad(true);
     }, 10);
+  };
+
+  const displayComparsion = () => {
+    let span = null;
+    const display = document.getElementById("display");
+    const fragment = document.createDocumentFragment();
+    display.textContent = "";
+
+    comparsionFiles.forEach((part) => {
+      const color = part.added ? "green" : part.removed ? "red" : "grey";
+      span = document.createElement("span");
+      span.style.color = color;
+      span.appendChild(
+        document.createTextNode(
+          part.added || part.removed ? part.value + "[4]" : part.value // Поменять на реальное значение
+        )
+      );
+      fragment.appendChild(span);
+    });
+    display.appendChild(fragment);
   };
 
   return (
@@ -32,7 +58,7 @@ const UploadForm = () => {
         <h3>Первый файл</h3>
         <input
           type="file"
-          accept=".doc, .docx, .pdf, .txt"
+          accept=".txt" //.doc, .docx, .pdf пока что не поддерживаются
           onChange={(e) => setFirstSelectedFile(e.target.files[0])}
         />
         <h3>Второй файл</h3>
@@ -49,16 +75,18 @@ const UploadForm = () => {
         </button>
       </div>
 
-      {filesContent && (
+      {load && (
         <>
           <h3>Содержимое первого файла</h3> {filesContent.file1}{" "}
         </>
       )}
-      {filesContent && (
+      {load && (
         <>
           <h3>Содержимое второго файла</h3> {filesContent.file2}{" "}
         </>
       )}
+      {load && <h3>Разница</h3>}
+      <span id="display"></span>
     </div>
   );
 };
