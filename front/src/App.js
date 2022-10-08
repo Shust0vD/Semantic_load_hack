@@ -1,5 +1,11 @@
+import UploadForm from "./components/UploadForm";
+
 function App() {
-  return <div></div>;
+  return (
+    <>
+      <UploadForm />
+    </>
+  );
 }
 
 export default App;
