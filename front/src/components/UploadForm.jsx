@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { uploadFiles } from "../API";
+import Accordion from "react-bootstrap/Accordion";
 
 const UploadForm = () => {
   const [firstSelectedFile, setFirstSelectedFile] = useState(null);
   const [secondSelectedFile, setSecondSelectedFile] = useState(null);
-  const [load, setLoad] = useState(false);
   const [filesContent, setFilesContent] = useState({});
   const [comparsionFiles, setComparsionFiles] = useState([]);
 
@@ -28,7 +28,6 @@ const UploadForm = () => {
       setFilesContent(files);
 
       displayComparsion();
-      setLoad(true);
     }, 10);
   };
 
@@ -53,7 +52,7 @@ const UploadForm = () => {
   };
 
   return (
-    <div>
+    <>
       <div>
         <h3>Первый файл</h3>
         <input
@@ -75,19 +74,23 @@ const UploadForm = () => {
         </button>
       </div>
 
-      {load && (
-        <>
-          <h3>Содержимое первого файла</h3> {filesContent.file1}{" "}
-        </>
-      )}
-      {load && (
-        <>
-          <h3>Содержимое второго файла</h3> {filesContent.file2}{" "}
-        </>
-      )}
-      {load && <h3>Разница</h3>}
-      <span id="display"></span>
-    </div>
+      <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Difference</Accordion.Header>
+          <Accordion.Body>
+            <span id="display"></span>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>File contents #1</Accordion.Header>
+          <Accordion.Body>{filesContent.file1}</Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>File contents #2</Accordion.Header>
+          <Accordion.Body>{filesContent.file2}</Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+    </>
   );
 };
 

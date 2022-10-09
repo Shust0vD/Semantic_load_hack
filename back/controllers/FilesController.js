@@ -1,4 +1,4 @@
-const { Comparsion } = require("../pythonDefs/Comparison");
+const { Comparsion } = require("../processing/Comparison");
 
 class FileController {
   async uploadFiles(req, res, next) {
